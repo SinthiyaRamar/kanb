@@ -1,0 +1,63 @@
+<script>
+    $('#whole-container').append('<div id=newtaskdivbackground ></div>')
+</script>
+<%let columnvaluearray=columnArrayvalue  %>
+
+<div id="newTaskContentDiv" >
+       <div id="taskAligndiv">
+        <div id="newtaskelementDiv"> 
+                <form action="/newTaskPage" method="post">
+                    <h1 id="newtaskaddstyle" >Add New Task</h1>
+          <p class="newtaskfontsize" >Title</p>
+          <input autocomplete="off" placeholder="e.g., Build Settings UI" name="tasktitle" id="newtaskinputtitle" type="text" />
+          <p class="newtaskfontsize" >Description</p>
+          <textarea autocomplete="off" placeholder="e.g. It is always good to take a break. " id="newtaskdescriptioninput" type="text" ></textarea>
+
+          <div>
+            <p class="newtaskfontsize" > Subtasks</p>
+
+            <ul class="subtasublist" >
+            
+            </ul>
+
+          </div>
+          <div id="newaddsubtasks" >+ Add New Subtasks</div>
+          <p class="newtaskfontsize" >status</p>
+          <div>
+          <select id="tasktitlenameselect" >
+            <% columnvaluearray.forEach((item)=>{ %>
+              <option value="<%=item%>"><%=item%></option>
+            <% }) %>
+          </select>
+          <p></p>
+        </div>
+          <input type="submit" id="createTaskButton" value="Create Task" ></button>
+        </form>
+       </div>
+    </div>
+</div>
+
+<script>
+  let subtasklistcount=0;
+  $('#newaddsubtasks').click(function(){
+    subtasklistcount++;
+    $('.subtasublist').append(`<li id="subtasklist${subtasklistcount}" ><div class="BoardSubtaskName" ><input name="subtasklist${subtasklistcount}" type="text" class="subtasknamelistinputtag" placeholder="Subtask here!!!" required/><img class="crossImg" onclick=RemovesubList(${subtasklistcount})  src="./assets/icon-cross.svg" /></div></li>`)
+    var list = document.querySelector(".subtasublist");
+    var items = list.getElementsByTagName("li");
+    var count = items.length;
+
+    $('#subtasklistCount').remove();
+      $('#newaddsubtasks').append(`<input id="subtasklistCount" autocomplete="off" type="number" Name="subtaskListCountvalue" value=${count}  style="display:none" />`)
+})
+function RemovesubList(subtaskremovelistnumber){
+    var list = document.querySelector(".subtasublist");
+     var items = list.getElementsByTagName("li");
+     var count = items.length-1;
+     // alert(count);
+      $('#subtasklistCount').remove();
+     $(`#subtasklist${subtaskremovelistnumber}`).remove();
+
+     $('#newaddsubtasks').append(`<input id="subtasklistCount" type="number" Name="subtaskListCountvalue" value=${count}  style="display:none" />`)
+
+}
+</script>

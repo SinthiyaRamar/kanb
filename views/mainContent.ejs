@@ -1,0 +1,40 @@
+
+
+
+<% let columnDetails=boardValue %>
+<%  let columnArray= JSON.parse(columnDetails[0].columnName) %>
+<%  let columnArrayLength= columnArray.length %>
+<% console.log(columnArray[0]) %>
+<% console.log(columnArrayLength) %>
+
+<% let gridValue=  columnArrayLength +1 %>
+<div id="task_Div"  style="grid-template-columns: repeat(<%= gridValue %>,25%)">
+<% for(let i=0; i< columnArrayLength; i++){%>
+    
+  <div class="task"  >
+      <div id="task_name">
+   <div id="circleDiv"></div> 
+   <p>    <%= columnArray[i] %> </p>
+  </div>
+  <div class="scrollDiv">
+
+      <!-- <div onclick="task()" class="tasks_value taskdiv">
+      <div class="taskTitle" >
+     
+          
+      </div>
+    
+      <p class="subtaskCount" > </p> -->
+      
+  </div>
+  </div>
+<% }%>
+ <div id="addColumn" > 
+   <div></div>
+   <div class="addColumnDiv" >
+      <p>+ Add Column</p>
+   </div>
+
+ </div>
+</div>
+</div>

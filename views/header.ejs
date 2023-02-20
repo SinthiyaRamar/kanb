@@ -1,0 +1,47 @@
+<div id="headerBoardDiv">
+  <div id="headTitle">
+    <h4><%=headerTitleName %></h4>
+  </div>
+ <div class="addNewTaskDiv" > <div id="addTaskHeadDiv" onclick="NewTaskAdd('<%=headerTitleName%>')" >+ Add New Task</div></div>
+ <div class="addNewTaskDiv" ><img id="iconverticalImg" onclick="deleteBoard('<%=headerTitleName%>')" src="../assets/icon-vertical.svg"/> </div>
+
+ <script>
+   async function deleteBoard(boardHead){
+    console.log(boardHead)
+        $("#whole-container").append('<div id="deleteBoardDetails"></div>')
+       await deleteboardPage(boardHead)
+      }
+    async function deleteboardPage(boardHead){
+      let deletePromise=new Promise(function(resolve){
+        let request=new XMLHttpRequest();
+        request.open("GET",`deleteBoard/${boardHead}`);
+        request.onload=function(){
+          if(request.status==200){
+            resolve(request.response)
+          }
+          else{
+            resolve("File Not Fount Please wait!");
+          }
+        
+        }
+        request.send();
+      });
+      document.getElementById("deleteBoardDetails").innerHTML=await deletePromise;
+    }
+
+  function deleteCancel(){
+     $('#deleteBoardDetails').remove();
+   }
+
+    
+ function NewTaskAdd(boardNamevalue){
+  console.log(boardNamevalue)
+  const splitname=boardNamevalue.split(" ");
+  const splitnamevalue=splitname.join("*");
+  console.log(splitnamevalue)
+    $('#mainContent').load(`/newTask/${splitnamevalue}`);
+ }
+</script>
+
+</div>
+

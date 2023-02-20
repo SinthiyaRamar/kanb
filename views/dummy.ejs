@@ -1,0 +1,95 @@
+<!--<% let column_Value=JSON.parse(columnDetails[0].columns) %>
+<% let columnLength=column_Value.length %>
+<% let count=0 %> -->
+ <!-- <div id="task_Div"  style="grid-template-columns: repeat(<%= gridValue %>,25%)">
+  
+   <% for(let i=0; i< columnLength; i++){%>
+    
+    <div class="task"  >
+        <div id="task_name">
+     <div id="circleDiv"></div> 
+     <p>    <%= column_Value[i].name %> </p>
+    </div>
+  <div class="scrollDiv">
+      <%let tasks_value= column_Value[i].tasks %>
+      <% tasks_value.forEach(item => {%>
+        <% let currTaskName=JSON.stringify(item)%>
+        <div onclick="task(<%=currTaskName%>)" class="tasks_value taskdiv">
+        <div class="taskTitle" >
+          <p >  <%= item.title %></p>
+       
+            
+        </div>
+        <% let subtasksTrueCount=0%>
+        <% let subtasks=item.subtasks %>
+        <% subtasks.forEach(count =>{ %>
+            <% if(count.isCompleted==true){%>
+                 <%subtasksTrueCount++ %>
+            <%}%>
+        <%})%>
+        <p class="subtaskCount" > <%=subtasksTrueCount %> of <%= item.subtasks.length%> subtasks</p>
+        
+    </div>
+       <% }) %>
+    </div>
+    </div>
+  <% }%>
+   <div id="addColumn" > 
+     <div></div>
+     <div class="addColumnDiv" >
+        <p>+ Add Column</p>
+     </div>
+   </div>
+
+     
+    <script>
+        // $(".taskdiv").click(function(){
+        //     $('#whole-container').append('<div class="showTasks" ><div id="addTaskDiv" > </div></div>');
+        //      $('#addTaskDiv').load('/task');
+        // })
+        async function task(itemValue){
+            let tasksContent=itemValue;
+            let taskTitle=tasksContent.title;
+            let taskDescription=tasksContent.description;
+            let taskStatus=tasksContent.status;
+            let taskSubtasks=tasksContent.subtasks;
+            let subtaskArray=[];
+                for(let i=0; i<taskSubtasks.length; i++){
+                  // subtaskArray.push(JSON.stringify(taskSubtasks).join("%"))
+                  // console.log(subtaskArray)
+                }
+                let taskSubtasksString = encodeURIComponent(JSON.stringify(taskSubtasks));
+                console.log(taskSubtasksString)
+            console.log(tasksContent)
+            console.log(tasksContent.description)
+            $('#whole-container').append('<div class="showTasks" ><div id="addTaskDiv" ></div></div>');    
+            await taskFile(taskTitle,taskDescription,taskStatus,taskSubtasksString)
+
+           
+        
+        }
+
+
+        async function taskFile(taskTitle,taskDescription,taskStatus,taskSubtasksString){
+       let mypromise=new Promise(function(resolve){
+        let req=new XMLHttpRequest();
+        req.open("GET",`task?task_title=${taskTitle}&task_description=${taskDescription}&task_status=${taskStatus}&task_subtasks=${taskSubtasksString}`);
+
+        req.onload=function(){
+            if(req.status == 200){
+                resolve(req.response);
+            }
+            else{
+                resolve("File not found")
+            }
+        }
+
+        req.send();
+    });
+   document.getElementById("addTaskDiv").innerHTML=await mypromise;
+}
+
+
+    </script>
+
+ </div> -->

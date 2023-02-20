@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8" />
+	<title></title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+
+</head>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+
+
+
+<body>
+   
+	<div id="whole-container" >
+
+       <div id="header" >
+       <div id="logoimgDiv" >
+            <img id="MenuImg" src="./assets/logo-dark.svg"/>
+       </div>
+        <div id="headDiv" >
+
+        </div>
+       </div>
+   
+       <div id="Main">
+        <div id="slidebar">
+         <%- include('./partials/slideBar',{boardValue});%>
+       </div>
+    
+        <div id="mainContent">
+         <%- include('createBoard');%>
+             
+            <script>   
+
+                   $("#createBoard").click(function(){
+                    $("#mainContent").load('/createBoard');
+                    $("#headerBoardDiv").empty();
+                   })
+                   $('.boardname').click(function(){
+                   let boardId=Number($(this).attr("id"));
+                   console.log(boardId);
+                   $('#headDiv').load(`/header/${boardId}`);
+                  $('#mainContent').load(`/mainContent/${boardId}`);
+                              
+                 })
+    
+             </script>
+        </div>
+    </div>
+    </div>
+    </div>
+
+    <script src="js/script.js"></script>
+  
+</body> 
+</html> 

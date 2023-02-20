@@ -1,0 +1,19 @@
+
+    <div id="board" >
+     <% let BoardDetails=boardValue %>
+     <% console.log(BoardDetails) %>
+     
+       <div id="createBoard" > <img class="createBoardImg" src="./assets/icon-board.svg"/>+Create New Board</div>
+      <% BoardDetails.forEach((item)=>{ %>
+        
+         <div class="boardname" id="<%= item.boardId %>" > <img class="createBoardImg" src="./assets/icon-board.svg"/> <%= item.boardName %></div>
+        
+    <% }) %>
+   
+    </div>
+    <div id=theme ></div>
+  <script>
+    $('#createBoard').click(function(){
+      $('#mainContent').load("/createBoard")
+    })
+  </script>

@@ -1,0 +1,62 @@
+<%- include('index',{boardValue}) %>
+<script>
+     $("#whole-container").append('<div  id="createNewBoardContent" ></div>');
+     
+</script>
+<div id="createNewItemBoard" >
+    <form action="/newBoardPage" method="post" >
+<div id="newBoardContent"> 
+    <div id="addNewBoardText" >
+        <h2>Add New Board</h2>
+    </div> 
+    <div id="createNewBoardName" >
+        <p class="pTagFont" >Name</p>
+        <input type="text" autocomplete="off" id="newBoardName" placeholder=" e.g. Web design" name="newboardname" required/>
+    </div>
+    <div id="newColumnScrollDiv" >
+        <p  class="pTagFont">Columns</p>
+        <ul  class="columnTask">
+       
+    </ul>
+    </div>
+    
+    <div id="BoardNewColumn" >
+       + Add New Column
+    </div>
+
+    <input type="submit" id="create_new_Board" value=" Create New Board"  />
+       
+   
+</div>
+</form>
+</div>
+
+
+<script>
+    let liCount=0;
+    $('#BoardNewColumn').click(function(){
+        liCount++;
+       $('.columnTask').append(`<li id=li${liCount} ><div class="BoardTaskName"><input type="text" name="list${liCount}" class="newColumnName" placeholder="Column Name Here!!"  required/><img class="crossImg" onclick=RemoveTaskName(${liCount})  src="./assets/icon-cross.svg" /> </div></li>`)
+       var list = document.querySelector(".columnTask");
+var items = list.getElementsByTagName("li");
+var count = items.length;
+// alert(count);
+      $('#listCount').remove();
+      $('#BoardNewColumn').append(`<input id="listCount" autocomplete="off" type="number" Name="ListColumnCount" value=${count}  style="display:none" />`)
+
+
+   })
+   function RemoveTaskName(liNo){
+
+     var list = document.querySelector(".columnTask");
+     var items = list.getElementsByTagName("li");
+     var count = items.length-1;
+     // alert(count);
+      $('#listCount').remove();
+     $(`#li${liNo}`).remove();
+
+     $('#BoardNewColumn').append(`<input id="listCount" type="number" Name="ListColumnCount" value=${count}  style="display:none" />`)
+
+   }
+
+</script>
