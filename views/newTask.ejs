@@ -3,15 +3,18 @@
 </script>
 <%let columnvaluearray=columnArrayvalue  %>
 
+
 <div id="newTaskContentDiv" >
        <div id="taskAligndiv">
         <div id="newtaskelementDiv"> 
-                <form action="/newTaskPage" method="post">
+            <% let boardidnovalue=boardidno %>
+
+                <form action="/newTaskPage/<%= boardidnovalue %>" method="post">
                     <h1 id="newtaskaddstyle" >Add New Task</h1>
           <p class="newtaskfontsize" >Title</p>
           <input autocomplete="off" placeholder="e.g., Build Settings UI" name="tasktitle" id="newtaskinputtitle" type="text" />
           <p class="newtaskfontsize" >Description</p>
-          <textarea autocomplete="off" placeholder="e.g. It is always good to take a break. " id="newtaskdescriptioninput" type="text" ></textarea>
+          <textarea autocomplete="off" name="description" placeholder="e.g. It is always good to take a break. " id="newtaskdescriptioninput" type="text" ></textarea>
 
           <div>
             <p class="newtaskfontsize" > Subtasks</p>
@@ -24,7 +27,7 @@
           <div id="newaddsubtasks" >+ Add New Subtasks</div>
           <p class="newtaskfontsize" >status</p>
           <div>
-          <select id="tasktitlenameselect" >
+          <select   name="columnname" id="tasktitlenameselect" >
             <% columnvaluearray.forEach((item)=>{ %>
               <option value="<%=item%>"><%=item%></option>
             <% }) %>
@@ -47,7 +50,7 @@
     var count = items.length;
 
     $('#subtasklistCount').remove();
-      $('#newaddsubtasks').append(`<input id="subtasklistCount" autocomplete="off" type="number" Name="subtaskListCountvalue" value=${count}  style="display:none" />`)
+      $('#newaddsubtasks').append(`<input id="subtasklistCount" autocomplete="off" type="number" name="subtaskListCountvalue" value=${count}  style="display:none" />`)
 })
 function RemovesubList(subtaskremovelistnumber){
     var list = document.querySelector(".subtasublist");
@@ -57,7 +60,7 @@ function RemovesubList(subtaskremovelistnumber){
       $('#subtasklistCount').remove();
      $(`#subtasklist${subtaskremovelistnumber}`).remove();
 
-     $('#newaddsubtasks').append(`<input id="subtasklistCount" type="number" Name="subtaskListCountvalue" value=${count}  style="display:none" />`)
+     $('#newaddsubtasks').append(`<input id="subtasklistCount" type="number" name="subtaskListCountvalue" value=${count}  style="display:none" />`)
 
 }
 </script>
