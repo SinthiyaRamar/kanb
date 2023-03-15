@@ -1,0 +1,9 @@
+
+  <div id="deleteContent" > 
+    <div id="deleteLine" ><h3>Delete this Task?</h3></div>
+    <div  id="board_Delete_content_line" ><p> Are you sure you want to delete the "<%=tasktitle %>" task and its subtasks? This action cannot be reserved.
+</p>
+ </div>
+ 
+ <div id="deleteButtonDiv" ><form action="/deleteTaskDetails/<%=boardName%>/<%=taskcountvalue%>" method="post" ><button id="deleteButton" >Delete</button></form><button id="deleteCancelButton" onclick="TaskdeleteCancel('<%=boardidnumber%>')" >Cancel</button></div>
+ </div>

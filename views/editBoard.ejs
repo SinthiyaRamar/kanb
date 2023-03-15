@@ -1,0 +1,125 @@
+<% var columndetailsvalue =columnresult[0] %>
+<% var columnarraydetails=columndetailsvalue.columnName ? JSON.parse(columndetailsvalue.columnName) : [] %>
+<div id="deleteContent">
+<div id="editboardcontent">
+    <div id="crossimgstyleboard" ><img id="crossimgboard" src="./assets/icon-cross.svg"/></div>
+    <div id="editboardstyle" >
+        <h2> Edit Board</h2>
+    </div>
+    <div>
+        <h5 class="editstyleclass" >Name</h5>
+       <input id="editboardnameinput" type="text" value="<%=columndetailsvalue.boardName%>" /></div>
+        <div>
+            <div><h6 class="editstyleclass" >columns</h6></div>
+            <div id="newboardnamesdiv" >
+                <% var colunmcounts=0;%>
+            <input type="number" id="columncountvalue" value='<%=columnarraydetails.length%>' style="display: none;"/>
+    
+            <% columnarraydetails.forEach((columnname)=>{%>
+                <% colunmcounts++ %>
+                <!-- <ul class="columncreateultag" > -->
+               <li class="createcolumnstyle columncount<%=colunmcounts%>" ><input type="text" class="columnstyleinput" id="columnvalue<%=colunmcounts%>"  value='<%=columnname%>' /><img onclick="columnremove('columncount<%=colunmcounts%>')" class="crossImgColumn" src="./assets/icon-cross.svg" /></li>
+            <!-- </ul> -->
+            <%})%>
+           </div>
+           <div class="createcolumndivalignstyle" >
+            <div id="addnewcolumncreatediv" >Add New Column</div>
+        </div>
+        <p></p>
+        <div class="createcolumndivalignstyle" >
+            <input type="submit" id="addnewcolumncreatesavechangesdiv" onclick="savechages('<%=columndetailsvalue.boardId%>')" value="Save Changes" />
+        </div>    
+        </div>
+</div>
+</div>
+<script>
+    $('#addnewcolumncreatediv').click(function(){
+
+        var columnninputcountvalue=Number($('#columncountvalue').val());
+        columnninputcountvalue+=1;
+        console.log(columnninputcountvalue)
+        $('#newboardnamesdiv').append(`<li class="createcolumnstyle columncount${columnninputcountvalue}" ><input type="text" class="columnstyleinput" id="columnvalue${columnninputcountvalue}" name="columnvalue${columnninputcountvalue}" required/><img onclick="columnremove('columncount${columnninputcountvalue}')" class="crossImgColumn" src="./assets/icon-cross.svg" /></li>`);
+        $('#columncountvalue').val(columnninputcountvalue);
+
+        if($("#checkbox").is(":checked")){
+
+$('.columnstyleinput').css("border","1px solid #828fa3")
+$('.columnstyleinput ').css("background","#2b2c37")
+$('.columnstyleinput').css("color","white")
+}
+else{
+$('.columnstyleinput').css("border","1px solid black")
+$('.columnstyleinput').css("background","white")
+$('.columnstyleinput ').css("color","#29313c")
+}
+    })
+
+  $('#crossimgboard').click(function(){
+    $('#deleteBoardDetails').remove()
+  })
+  function savechages(boardNo){
+    var boardidvalueno=boardNo;
+    var columnninputcountvalues=Number($('#columncountvalue').val());
+    var columnarrayvalues=[];
+    for(let i=1; i<=columnninputcountvalues; i++){
+       if($(`#columnvalue${i}`).val()!="" && $(`#columnvalue${i}`).val()!=undefined){
+        columnarrayvalues.push($(`#columnvalue${i}`).val());
+       } 
+    }
+
+   var boardname=$('#editboardnameinput').val();
+
+   var newEditBoard={
+    boardnamevalue:boardname,
+    columnarrayvalue:columnarrayvalues
+   }
+  console.log(newEditBoard)
+    fetch(`editBoard/${boardidvalueno}`,
+   {
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json;charset=utf-8'
+    },
+    body: JSON.stringify({
+      neweditcolumnobject:newEditBoard
+    }),
+    redirect:"follow"
+   }
+   )
+   $('#deleteBoardDetails').remove();
+   $('#deleteContent').remove();
+   $('#editboardcontent').remove();
+   $('#mainContent').load(`mainContent/${boardidvalueno}`);
+  
+
+  }
+  function columnremove(classname){
+    $(`.${classname}`).remove();
+  }
+    
+  if($("#checkbox").is(":checked")){
+          $('#deleteContent').css("background","#2b2c37")
+          $('#editboardstyle').css("color","#ffffff")
+          $('.editstyleclass').css("color","#ffffff")
+          $('#editboardnameinput').css("background","#2b2c37")
+          $('#editboardnameinput').css("color","white")
+          $('.columnstyleinput ').css("background","#2b2c37")
+          $('.columnstyleinput').css("color","white")
+          $('#editboardnameinput').css("border","1px solid #828fa3")
+          $('.columnstyleinput').css("border","1px solid #828fa3")
+          
+          
+        }
+        else{
+          $('#deleteContent').css("background","white")
+          $('#editboardstyle').css("color","black")
+          $('.editstyleclass').css("color","black")
+          $('#editboardnameinput').css("background","white")
+          $('#editboardnameinput').css("color","#29313c")
+          $('.columnstyleinput').css("background","white")
+          $('.columnstyleinput ').css("color","#29313c")
+          $('#editboardnameinput').css("border","1px solid black")
+          $('.columnstyleinput').css("border","1px solid black")
+
+        }
+</script>

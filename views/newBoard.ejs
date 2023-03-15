@@ -1,11 +1,16 @@
 <%- include('index',{boardValue}) %>
 <script>
+      $("#theme").append("<div id=selectTheme><img class=logo src=./assets/icon-dark-theme.svg /><input id=checkbox  type=checkbox />  <img class=logo src=./assets/icon-light-theme.svg </div>")
+    $("#theme").append("<div id=hideSidebar class=hideSideBar > <img class=hide src=./assets/icon-hide-sidebar.svg /> Hide Sidebar </div>")
      $("#whole-container").append('<div  id="createNewBoardContent" ></div>');
      
 </script>
 <div id="createNewItemBoard" >
     <form action="/newBoardPage" method="post" >
 <div id="newBoardContent"> 
+    <div id="boardcrossimgdiv" >
+    <img onclick="boardnewpageremove()" id="boardcrossimg" src="./assets/icon-cross.svg" />
+</div>
     <div id="addNewBoardText" >
         <h2>Add New Board</h2>
     </div> 
@@ -33,7 +38,7 @@
 
 
 <script>
-    let liCount=0;
+  var liCount=0;
     $('#BoardNewColumn').click(function(){
         liCount++;
        $('.columnTask').append(`<li id=li${liCount} ><div class="BoardTaskName"><input type="text" name="list${liCount}" class="newColumnName" placeholder="Column Name Here!!"  required/><img class="crossImg" onclick=RemoveTaskName(${liCount})  src="./assets/icon-cross.svg" /> </div></li>`)
@@ -58,5 +63,8 @@ var count = items.length;
      $('#BoardNewColumn').append(`<input id="listCount" type="number" Name="ListColumnCount" value=${count}  style="display:none" />`)
 
    }
-
+   function boardnewpageremove(){
+    $('#createNewBoardContent').hide();
+    $('#createNewItemBoard').hide();
+   }
 </script>

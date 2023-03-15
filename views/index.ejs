@@ -3,8 +3,10 @@
 <head>
 	<meta charset="UTF-8" />
 	<title></title>
+    <script src="https://kit.fontawesome.com/4759b9b086.js" crossorigin="anonymous"></script>
+    <!-- <script src="https://kit.fontawesome.com/4759b9b086.js" crossorigin="anonymous"></script> -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-
+  
 </head>
 <link href="css/style.css" rel="stylesheet" type="text/css" />
 
@@ -26,13 +28,13 @@
        <div id="Main">
         <div id="slidebar">
          <%- include('./partials/slideBar',{boardValue});%>
+
        </div>
     
         <div id="mainContent">
          <%- include('createBoard');%>
              
             <script>   
-
                    $("#createBoard").click(function(){
                     $("#mainContent").load('/createBoard');
                     $("#headerBoardDiv").empty();

@@ -1,0 +1,135 @@
+<%var taskvalues=taskdetails %>
+<% var editsubtasks=taskvalues.Subtasks ? JSON.parse(taskvalues.Subtasks) : [] %>
+<% var columndetails=JSON.parse(columndetails) %>
+<div id="edittaskaligndiv" >
+    <div id="edittaskdiv" >
+        <div id="editasktitlediv" >
+    <div id="edittaskstyletitle" ><h1>Edit Task</h1></div>
+
+    <div id="edittaskdivcrossimg" >
+        <img id="edittaskcrossimg" onclick="removeedittaskpage('<%=boardno%>')" src="./assets/icon-cross.svg"/>
+    </div>
+</div>
+        <h4 class="edittaskstyle" >Title</h4>
+        <input id="edittasktitlename" type="text" value="<%=taskvalues.Title%>" />
+ 
+  
+        <h4 class="edittaskstyle" >Description</h4>
+        <textarea value="<%=taskvalues.Description%>" id="edittaskdescription" type="text"><%=taskvalues.Description%></textarea>
+      
+       <h4 class="edittaskstyle" >Subtasks</h4>
+       <% var subtaskscount=0 %>
+       <ul id="editsubtaskul" >
+       <% if(editsubtasks!=[]){ %>
+            <% editsubtasks.forEach((item)=>{ %>
+                <% subtaskscount+=1 %>
+               <li class="edittasklisttype edittasklist<%=subtaskscount%>" ><div class="listtagstyle" ><input class="editsubtaskinput edittaskinput<%=subtaskscount%>" type="text" value="<%=item.tasks%>"/><img onclick="editsubtaskremove('edittasklist<%=subtaskscount%>')" src="./assets/icon-cross.svg"/></div></li>
+                  
+             <%  }) %>
+       <%  } %>
+  
+    </ul>
+     <input type="number" id="subtaskcount" value="<%=editsubtasks.length%>" style="display: none;" />
+     <div id="editaddsubtasks" >+Add Subtasks</div>
+     <h5 class="edittaskstyle" >Status</h5>
+     <select value="<%=taskvalues.status%>" id="editselecttag" >
+        <% columndetails.forEach((columname)=>{ %>
+         <option value="<%=columname%>" ><%=columname%></option>
+         <%= columndetails %>
+        <% }) %>
+     </select>
+     <p></p>
+     <div id="editsavechanges" onclick="editTaskSubmitButton('<%=boardname%>','<%=taskcount%>','<%=boardno%>')" >Save Changes</div>
+</div>
+</div>
+<script>
+$('#editaddsubtasks').click(function(){
+   var subtaskcountvale=Number($('#subtaskcount').val())+1;
+   console.log(subtaskcountvale)
+ $('#editsubtaskul').append(`<li class="edittasklisttype edittasklist${subtaskcountvale}" ><div class="listtagstyle" ><input class="editsubtaskinput edittaskinput${subtaskcountvale}" type="text" value=""/><img onclick="editsubtaskremove('edittasklist${subtaskcountvale}')" src="./assets/icon-cross.svg"/></div></li>`)
+ $('#subtaskcount').val(`${subtaskcountvale}`)
+ console.log($('#subtaskcount').val()+"jkl")
+ if($("#checkbox").is(":checked")){
+
+$('.editsubtaskinput').css("border","1px solid #828fa3")
+$('.editsubtaskinput ').css("background","#2b2c37")
+$('.editsubtaskinput').css("color","white")
+}
+else{
+$('.editsubtaskinput').css("border","1px solid black")
+$('.editsubtaskinput').css("background","white")
+$('.editsubtaskinput ').css("color","#29313c")
+}
+})
+function editsubtaskremove(subtaskclass){
+    $(`.${subtaskclass}`).remove();
+}
+
+function editTaskSubmitButton(boardname,taskcount,boardidvalue){
+
+let subtaskcount=Number($('#subtaskcount').val());
+let subtaskArray=[];
+for(let i=1; i<=subtaskcount; i++){
+
+  console.log($(`.edittaskinput${i}`).val())
+   subtaskArray.push({tasks:$(`.edittaskinput${i}`).val(),isCompleted:false});
+}
+let tasksObject={
+  title:$('#edittasktitlename').val(),
+  description:$('#edittaskdescription').val(),
+  subtasks:subtaskArray,
+  status:$('#editselecttag').val()
+ }
+ fetch(`/editnewtask/${boardname}/${taskcount}`,
+ {
+  method:'POST',
+  headers:{
+    'Content-Type':'application/json;charset=utf-8'
+  },
+  body: JSON.stringify({
+    newtaskobject:JSON.stringify(tasksObject)
+  }),
+   redirect:"follow"
+ }
+ 
+ )
+ $('#newColumndivbackground').remove();
+ $('#mainContent').load(`/mainContent/${boardidvalue}`);
+}
+function removeedittaskpage(boardno){
+$('#mainContent').load(`/mainContent/${boardno}`);
+$('#newColumndivbackground').remove();
+
+}
+
+if($("#checkbox").is(":checked")){
+    $('#edittaskaligndiv').css("background-color","#2b2c37")
+    $('#edittasktitlename').css("background-color","#2b2c37")
+    $('#edittasktitlename').css("color","white")
+    $('#edittasktitlename').css("border","1px solid #828fa3")
+    $('#edittaskdescription').css("background-color","#2b2c37")
+    $('#edittaskdescription').css("color","white")
+    $('#edittaskdescription').css("border","1px solid #828fa3")
+    $('.editsubtaskinput').css("background-color","#2b2c37")
+    $('.editsubtaskinput').css("color","white")
+    $('.editsubtaskinput').css("border","1px solid #828fa3")
+    $('#editselecttag').css("background-color","#2b2c37")
+    $('#editselecttag').css("color","white")
+    $('#editselecttag').css("border","1px solid #828fa3")
+}
+else{
+    $('#edittaskaligndiv').css("background-color","white")
+    $('#edittasktitlename').css("background-color","white")
+    $('#edittasktitlename').css("color","black")
+    $('#edittasktitlename').css("border","1px solid black")
+    $('#edittaskdescription').css("background-color","white")
+    $('#edittaskdescription').css("color","black")
+    $('#edittaskdescription').css("border","1px solid black")
+    $('.editsubtaskinput').css("background-color","white")
+    $('.editsubtaskinput').css("color","black")
+    $('.editsubtaskinput').css("border","1px solid black")
+    $('#editselecttag').css("background-color","white")
+    $('#editselecttag').css("color","black")
+    $('#editselecttag').css("border","1px solid black")
+}
+</script>

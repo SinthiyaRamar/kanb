@@ -1,0 +1,110 @@
+<% var columndetailsvalue =columnresult %>
+<% var columnarraydetails=JSON.parse(columndetailsvalue.columnName) %>
+
+<div id="newcolumncreatediv" >
+    <div id="columnstylediv" >
+       <div id="addnewcolumndetailsdiv">
+
+<div  id="addnewtaskcrossimgdiv">
+    <h1 id="addcolumntitle" >Add Column</h1>
+    <img id="crossimggrid" class="crossImg" src="./assets/icon-cross.svg" />
+</div>
+        <div id="newcolumnnamesdiv" >
+            <% var subtaskscounts=0;%>
+        <input type="number" id="columncountvalue" value='<%=columnarraydetails.length%>' style="display: none;"/>
+
+        <% columnarraydetails.forEach((columnname)=>{%>
+            <% subtaskscounts++ %>
+            <!-- <ul class="columncreateultag" > -->
+           <li class="createcolumnstyle subtaskcount<%=subtaskscounts%>" ><input type="text" class="columnstyleinput" id="columnvalue<%=subtaskscounts%>"  value='<%=columnname%>' /><img onclick="columnremove('subtaskcount<%=subtaskscounts%>')" class="crossImgColumn" src="./assets/icon-cross.svg" /></li>
+        <!-- </ul> -->
+        <%})%>
+       </div>
+
+        <div class="createcolumndivalignstyle" >
+        <div id="addnewcolumncreatediv" >Add New Column</div>
+    </div>
+    <div class="createcolumndivalignstyle" >
+        <input type="submit" id="addnewcolumncreatesavechangesdiv" onclick="savechages('<%=columndetailsvalue.boardId%>')" value="Save Changes" />
+    </div>
+    
+    </div>
+    </div>
+</div>
+<div>
+</div>
+<script>
+    $('#addnewcolumncreatediv').click(function(){
+
+        var columnninputcountvalue=Number($('#columncountvalue').val());
+        columnninputcountvalue+=1
+        $('#newcolumnnamesdiv').append(`<li class="createcolumnstyle subtaskcount${columnninputcountvalue}" ><input type="text" class="columnstyleinput" id="columnvalue${columnninputcountvalue}" name="columnvalue${columnninputcountvalue}" required/><img onclick="columnremove('subtaskcount${columnninputcountvalue}')" class="crossImgColumn" src="./assets/icon-cross.svg" /></li>`);
+        $('#columncountvalue').val(columnninputcountvalue);
+  if($("#checkbox").is(":checked")){
+
+$('.columnstyleinput').css("border","1px solid #828fa3")
+$('.columnstyleinput ').css("background","#2b2c37")
+$('.columnstyleinput').css("color","white")
+}
+else{
+$('.columnstyleinput').css("border","1px solid black")
+$('.columnstyleinput').css("background","white")
+$('.columnstyleinput ').css("color","#29313c")
+}
+    })
+
+  $('.crossImg').click(function(){
+    $('#newColumndivbackground').remove()
+  })
+
+  function savechages(boardNo){
+    var boardidvalueno=boardNo;
+    var columnninputcountvalues=Number($('#columncountvalue').val());
+    var columnarrayvalues=[];
+    for(let i=1; i<=columnninputcountvalues; i++){
+       if($(`#columnvalue${i}`).val()!="" && $(`#columnvalue${i}`).val()!=undefined){
+        columnarrayvalues.push($(`#columnvalue${i}`).val());
+       } 
+    }
+
+    fetch(`addnewcolumn/${boardidvalueno}`,
+   {
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json;charset=utf-8'
+    },
+    body: JSON.stringify({
+      newcolumnobject:JSON.stringify(columnarrayvalues)
+    }),
+    redirect:"follow"
+   }
+   )
+   $('#newColumndivbackground').remove();
+   $('#newcolumncreatediv').remove();
+   $('#mainContent').load(`mainContent/${boardidvalueno}`);
+  
+
+  }
+  function columnremove(classname){
+    $(`.${classname}`).remove();
+  }
+  if($("#checkbox").is(":checked")){
+    $('#addnewcolumndetailsdiv').css("background","#2b2c37")
+    $('#addnewtaskcrossimgdiv').css("color","white")
+    $('.columnstyleinput').css("background","#2b2c37")
+    $('.columnstyleinput').css("color","white")
+    $('.columnstyleinput').css("border","1px solid #828fa3")
+
+
+
+   
+  }
+  else{
+    $('#addnewcolumndetailsdiv').css("background","white")
+    $('#addnewtaskcrossimgdiv').css("color","black")
+    $('.columnstyleinput').css("background","white")
+    $('.columnstyleinput').css("color","black")
+    $('.columnstyleinput').css("border","1px solid black")
+
+  }
+</script>

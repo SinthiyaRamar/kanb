@@ -1,15 +1,173 @@
 
-<div id="taskConcepts">
-    <div id="task_head">
 
-     <h3> <%= taskTitle%></h3>
+<!-- <% let taskDetails= taskvalues%>
+<% let taskdetails=taskvalues %> -->
+<% var taskcurrentdetails=taskvalues[0];%>
+<% var subtaskdetails=JSON.parse(taskcurrentdetails.Subtasks) %>
+<% var taskcountvalue=taskcurrentdetails.TASKCOUNT %>
+<% console.log(subtaskdetails) %>
+<div id="taskConcepts">
+    <div id="taskdetailsaligndiv">
+    <div id="taskscontents">
+    <div id="task_head">
+        <div id="addnewtaskcrossimgdiv" >  <h3> <%=taskcurrentdetails.Title%></h3><i id="deleteiconstyle" onclick="deleteTask('<%=currboardname%>','<%=taskcountvalue%>','<%=boardidnumber%>')" class="fa-solid fa-trash"></i><i onclick="editTask('<%=boardidnumber%>','<%=taskcountvalue%>')" id="edittaskfont" class="fa-solid fa-pencil"></i><img id="newtaskaddcrossimg" onclick="removetaskdetailspage('<%=boardidnumber%>')" src="/assets/icon-cross.svg" /></div>
+
+    
    
     </div>
     <div id="task_descrip">
-       <p> <%= taskDescription%></p>
+       <p> <%=taskcurrentdetails.Description%></p>
     </div>
-    <div id="task_subtasks" >
-        <%let subtaskString= taskSubtasks %>
-     
-    </div>
+    <div  id="subtaskdivdetails" >
+       <% let count=0; %>
+       <% let totalsubtaskcount=subtaskdetails.length %>
+       <% subtaskdetails.forEach((subtaksitem)=>{%>
+           <%  if(subtaksitem.isCompleted==true){ %>
+                <% count++ %>
+            <% } %>
+        <% }) %>
+        <p class="subtaskcolor" >subtasks(<%=count%> of <%=totalsubtaskcount%>)</p>
+        <% let subtaskinputtagcount=0; %>
+    <% subtaskdetails.forEach((subtasksitem)=>{%>
+        <% subtaskinputtagcount+=1; %>
+        <div id="task_subtasks" >
+      <% if(subtasksitem.isCompleted){%>
+        <p class="subtasksdetailstext myClass subtasktext<%=subtaskinputtagcount%>" > <input class="subtaskcheckbox" id="subtaskcheckbox<%=subtaskinputtagcount%>" onclick="taskcheckbox('<%=taskcurrentdetails.Title%>','<%=taskcurrentdetails.Description%>','<%=taskcurrentdetails.Subtasks%>','<%=taskcurrentdetails.status%>','<%=taskcurrentdetails.TASKCOUNT%>','subtaskcheckbox<%=subtaskinputtagcount%>','<%=currboardname%>','subtasktext<%=subtaskinputtagcount%>')" type="checkbox" checked/>   <%=subtasksitem.tasks%></p>
+
+     <% }%>
+     <% if(!subtasksitem.isCompleted){%>
+      <p class="subtasksdetailstext subtasktext<%=subtaskinputtagcount%>" > <input class="subtaskcheckbox" id="subtaskcheckbox<%=subtaskinputtagcount%>" onclick="taskcheckbox('<%=taskcurrentdetails.Title%>','<%=taskcurrentdetails.Description%>','<%=taskcurrentdetails.Subtasks%>','<%=taskcurrentdetails.status%>','<%=taskcurrentdetails.TASKCOUNT%>','subtaskcheckbox<%=subtaskinputtagcount%>','<%=currboardname%>','subtasktext<%=subtaskinputtagcount%>')" type="checkbox"/>   <%=subtasksitem.tasks%></p>
+
+     <%}%>
+        </div>
+    <% }) %>
+       <p class="subtaskcolor" >Current status</p>
+       <p class="subtaskstatusstyle" ><%=taskcurrentdetails.status%></p>
 </div>
+</div>
+</div>
+</div>
+<script>
+    function removetaskdetailspage(boardno){
+        $('#newColumndivbackground').remove();
+        $('#taskConcepts').remove();
+    $('#mainContent').load(`mainContent/${boardno}`);
+
+    }
+    function editTask(BoardNo,taskcount){
+  console.log(BoardNo)
+  console.log(taskcount)
+  $('#taskdetailsaligndiv').load(`/editTask/${BoardNo}/${taskcount}`);
+
+}
+
+    async function deleteTask(boardname,taskcount,boardidnumber){
+    //   console.log(boardHead)
+          $('#taskConcepts').remove();
+          $('#newColumndivbackground').remove();
+          $("#whole-container").append('<div id="deleteBoardDetails"></div>')
+          // $('#deleteBoardDetails').slideDown("slow");
+  
+         await deleteboardPage(boardname,taskcount,boardidnumber)
+        }
+      async function deleteboardPage(boardname,taskcount,boardidnumber){
+        let deletePromise=new Promise(function(resolve){
+          let request=new XMLHttpRequest();
+          request.open("GET",`deleteTask/${boardname}/${taskcount}/${boardidnumber}`);
+          request.onload=function(){
+            if(request.status==200){
+              resolve(request.response)
+            }
+            else{
+              resolve("File Not Fount Please wait!");
+            }
+          
+          }
+          request.send();
+        });
+        document.getElementById("deleteBoardDetails").innerHTML=await deletePromise;
+
+if($("#checkbox").is(":checked")){
+
+    $('#deleteContent').css("background","#2b2c37")
+}
+else{
+    $('#deleteContent').css("background","white")
+
+}
+      }
+
+    function TaskdeleteCancel(boardidnumber){
+        $('#deleteBoardDetails').remove();
+       $('#mainContent').load(`mainContent/${boardidnumber}`);
+        
+    }
+    function taskcheckbox(tasktitle,taskdescription,tasksubtasks,taskstatus,taskcount,checkboxid,boardname,addclassid){
+     
+       boardname=boardname.split(" ").join("_");
+        if($(`#${checkboxid}`).is(':checked')){
+            $(`.${addclassid}`).addClass("myClass");
+        var subtasks=JSON.parse(tasksubtasks);
+       let subtaskcounts=0;
+       subtasks.forEach((element) => {
+        subtaskcounts+=1;
+         element.isCompleted=$(`#subtaskcheckbox${subtaskcounts}`).is(':checked')
+         console.log($(`#subtaskcheckbox${subtaskcounts}`).is(':checked'))
+       });
+  console.log(subtasks)
+      }
+      else{
+        $(`.${addclassid}`).removeClass("myClass");
+
+       var subtasks=JSON.parse(tasksubtasks);
+       let subtaskcounts=0;
+       subtasks.forEach((element) => {
+        subtaskcounts+=1;
+        console.log($(`#subtaskcheckbox${subtaskcounts}`).is(':checked'))
+
+         element.isCompleted=$(`#subtaskcheckbox${subtaskcounts}`).is(':checked')
+       });
+//   console.log(subtasks)
+
+
+
+      }
+
+      fetch(`addnewsubtaskvalue/${boardname}/${taskcount}`,
+   {
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json;charset=utf-8'
+    },
+    body: JSON.stringify({
+      newtaskobject:JSON.stringify(subtasks)
+    }),
+     redirect:"follow"
+   })
+}
+
+
+if($("#checkbox").is(":checked")){
+    $('#taskscontents').css("background","#2b2c37")
+    $('#addnewtaskcrossimgdiv').css("color","white")
+    $('.subtaskstatusstyle').css("border","1px solid #7d899d")
+    $('.subtaskstatusstyle').css("color","white")
+    $('.subtasksdetailstext').css("background","#20212c")
+    $('.subtasksdetailstext').css("color","white")
+
+
+    
+}
+else{
+    
+    $('#taskscontents').css("background","white")
+    $('#addnewtaskcrossimgdiv').css("color","black")
+    $('.subtaskstatusstyle').css("border","1px solid black")
+    $('.subtaskstatusstyle').css("color","black")
+    $('.subtasksdetailstext').css("background","#f4f7fd")
+
+     
+
+
+}
+</script>

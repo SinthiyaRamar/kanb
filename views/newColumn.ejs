@@ -1,0 +1,14 @@
+<div  id="alignboardcolumnDiv" >
+    <div id="newColumn">
+        <div><h3>This board is empty. Create a new column to get started.</h3></div>
+        <div id="addColumnDiv" onclick="callCreateColumnPage('<%=boardidvalueno%>')" >+ Add New Column</div>
+   </div>
+</div>
+
+<script>
+function callCreateColumnPage(boardid){
+    $('#whole-container').append('<div id=newColumndivbackground ></div>')
+    $('#newColumndivbackground').load(`/createColumn/${boardid}`);
+    
+}
+</script>

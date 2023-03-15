@@ -2,39 +2,125 @@
 
 
 <% let columnDetails=boardValue %>
-<%  let columnArray= JSON.parse(columnDetails[0].columnName) %>
+<% var boardid=columnDetails[0].boardId %>
+<% let columnArray = columnDetails[0].columnName ? JSON.parse(columnDetails[0].columnName) : [] %>
 <%  let columnArrayLength= columnArray.length %>
-<% console.log(columnArray[0]) %>
-<% console.log(columnArrayLength) %>
 
 <% let gridValue=  columnArrayLength +1 %>
+<% let taskvalues=taskdetailsvalues ? taskdetailsvalues : [] %>
+<% if(columnArrayLength==0 || columnArray==[] ){ %>
+<script>
+
+   var boardId='<%- JSON.stringify(boardid) %>';
+   console.log(boardId+"fg")
+   console.log(boardId);
+   boardId=Number(boardId)
+     $('#mainContent').load(`/newColumn/${boardId}`);
+
+</script>
+<%var boardidvalueno=boardid %>
+<%- include('newColumn',{boardidvalueno}) %>
+<%}
+ else { %>
 <div id="task_Div"  style="grid-template-columns: repeat(<%= gridValue %>,25%)">
-<% for(let i=0; i< columnArrayLength; i++){%>
+ <% for(let i=0; i< columnArrayLength; i++){%>
     
   <div class="task"  >
       <div id="task_name">
    <div id="circleDiv"></div> 
-   <p>    <%= columnArray[i] %> </p>
+   <p class="columnname" >    <%= columnArray[i] %> </p>
   </div>
+  
   <div class="scrollDiv">
+    <% if(taskvalues!=[]){ %>
 
-      <!-- <div onclick="task()" class="tasks_value taskdiv">
+    <% taskvalues.forEach((itemtask)=>{ %>
+        <%var taskcount=itemtask.TASKCOUNT %>
+
+   <% if(columnArray[i]==itemtask.status){ %>
+       <div onclick="task('<%=columnDetails[0].boardName%>','<%=boardid%>','<%=taskcount%>')" class="tasks_value taskdiv">
       <div class="taskTitle" >
      
+          <%=itemtask.Title%>
           
       </div>
     
-      <p class="subtaskCount" > </p> -->
+      <p class="subtaskCount" >
+        <% let subtasksvalue=JSON.parse(itemtask.Subtasks) %>
+       <% let count=0; %>
+       <% let totalsubtaskcount=subtasksvalue.length %>
+        <% subtasksvalue.forEach((subtaksitem)=>{%>
+            <%  if(subtaksitem.isCompleted==true){ %>
+                 <% count++ %>
+             <% } %>
+         <% }) %>
+         <%=count%> of <%=totalsubtaskcount%> subtasks 
+      </p> 
       
+   </div>
+  <% } %>
+  <% }) %>
+    <% } %>
   </div>
   </div>
-<% }%>
+<% }%> 
  <div id="addColumn" > 
    <div></div>
-   <div class="addColumnDiv" >
+   <div id="<%=columnDetails[0].boardId%>" class="addColumnDiv" >
       <p>+ Add Column</p>
    </div>
 
  </div>
 </div>
-</div>
+<% } %>
+<script>
+
+   $('.addColumnDiv').click(function(){
+    // alert(`${Number($(this).attr("id"))}`)
+    $('#whole-container').append('<div id=newColumndivbackground ></div>')
+
+    $('#newColumndivbackground').load(`/createColumn/${Number($(this).attr("id"))}`);
+   })
+
+  function task(boardnamevalue,boardno,taskcount){
+    var currboardnamevalue=boardnamevalue.split(" ").join("_")
+    console.log(taskcount)
+    $('#whole-container').append('<div id=newColumndivbackground ></div>')
+    $('#mainContent').load(`task/${currboardnamevalue}/${taskcount}/${boardno}`);
+  }
+        if($("#checkbox").is(":checked")){
+           
+            $('#headTitle').css("color","white");
+            $('.taskTitle').css("color","white");
+            $('#circleDiv').css("color","white");
+            $('.taskdiv').css("box-shadow","rgb(0 0 1 / 20%) 1vh 1vh 2vh 0vh")
+            $('.taskdiv').css("background","#2b2c37")
+            $('.addColumnDiv').css("background","#2b2c37")
+            $('.addColumnDiv').css("color","white")
+            $('.columnname').css("color","white")      
+            $('#slidebar').css("border-top","1px solid #828fa3") 
+            $('#mainContent').css("border-left","1px solid #828fa3") 
+            $('#theme').css("border-top","1px solid #828fa3") 
+            $('#mainContent').css("border-top","1px solid #828fa3") 
+            $('#taskscontents').css("background","#2b2c37");
+
+        }
+        else{
+            $('#headTitle').css("color","black");
+            $('.taskTitle').css("color","black");
+            $('#circleDiv').css("color","black");
+            $('.taskdiv').css("box-shadow","rgb(100 100 111 / 20%) 1vh 1vh 2vh 0vh")
+            $('.taskdiv').css("background","white")
+            $('.addColumnDiv').css("background","#eaf0fb")
+            $('.addColumnDiv').css("color","black")
+            $('.columnname').css("color","black")
+            $('#slidebar').css("border-top","1px solid #aba4ff") 
+            $('#mainContent').css("border-left","1px solid #aba4ff") 
+            $('#theme').css("border-top","1px solid #aba4ff")
+            $('#mainContent').css("border-top","1px solid #aba4ff")
+            $('#taskscontents').css("background","white");
+ 
+
+        }
+
+</script>   

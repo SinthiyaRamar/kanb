@@ -1,47 +1,110 @@
 <div id="headerBoardDiv">
-  <div id="headTitle">
-    <h4><%=headerTitleName %></h4>
-  </div>
- <div class="addNewTaskDiv" > <div id="addTaskHeadDiv" onclick="NewTaskAdd('<%=headerTitleName%>')" >+ Add New Task</div></div>
- <div class="addNewTaskDiv" ><img id="iconverticalImg" onclick="deleteBoard('<%=headerTitleName%>')" src="../assets/icon-vertical.svg"/> </div>
+    <div id="headTitle">
+      <h4><%=headerTitleName %></h4>
+    </div>
+   <div class="addNewTaskDiv" > <div id="addTaskHeadDiv" onclick="NewTaskAdd('<%=headerTitleName%>')" >+ Add New Task</div></div>
+   <div class="addNewTaskDiv" id="menudiv" ><img id="iconverticalImg" onclick="deleteBoard('<%=headerTitleName%>')" src="../assets/icon-vertical.svg"/> </div>
+  
+   <script>
+     function deleteBoard(boardHead){
+      boardHead=boardHead.split(" ").join("*");
 
- <script>
-   async function deleteBoard(boardHead){
-    console.log(boardHead)
-        $("#whole-container").append('<div id="deleteBoardDetails"></div>')
-       await deleteboardPage(boardHead)
-      }
-    async function deleteboardPage(boardHead){
-      let deletePromise=new Promise(function(resolve){
-        let request=new XMLHttpRequest();
-        request.open("GET",`deleteBoard/${boardHead}`);
-        request.onload=function(){
-          if(request.status==200){
-            resolve(request.response)
-          }
-          else{
-            resolve("File Not Fount Please wait!");
-          }
-        
-        }
-        request.send();
-      });
-      document.getElementById("deleteBoardDetails").innerHTML=await deletePromise;
-    }
-
-  function deleteCancel(){
-     $('#deleteBoardDetails').remove();
-   }
+      console.log(boardHead)
+        $('#menudiv').append(`<div id='menu'><div onclick=editboardcontent('${boardHead}') id='editboardselect'><p>Edit Board</p></div><div onclick=deleteboardcontent('${boardHead}') id='deleteboardselect'><p>Delete Board</p></div></div>`);
+          // $("#whole-container").append('<div id="deleteBoardDetails"></div>')
+          //  $('#deleteBoardDetails').slideDown("slow");
+       if($("#checkbox").is(":checked")){
+        $("#menu").attr("class","Menu");
+        $("#editboardselect").attr("class","boardselect");
+        $("#deleteboardselect").attr("class","boardselect");
 
     
- function NewTaskAdd(boardNamevalue){
-  console.log(boardNamevalue)
-  const splitname=boardNamevalue.split(" ");
-  const splitnamevalue=splitname.join("*");
-  console.log(splitnamevalue)
-    $('#mainContent').load(`/newTask/${splitnamevalue}`);
- }
-</script>
+       }
+       else{
+        $("#menu").attr("class","menu");
+        $("#editboardselect").attr("class","BoardSelect");
+        $("#deleteboardselect").attr("class","BoardSelect");
 
-</div>
 
+
+       }
+        setTimeout(`$('#menu').remove()`,4000);
+            
+        //  await deleteBoardPage(boardHead)
+        }
+        async function editboardcontent(boardHead){
+
+          $("#whole-container").append('<div id="deleteBoardDetails"></div>')
+          $('#deleteBoardDetails').slideDown("slow");
+
+          $('#menu').remove()
+         await editboard(boardHead)
+        }
+        async function deleteboardcontent(boardHead){
+          $('#menu').remove()
+          $("#whole-container").append('<div id="deleteBoardDetails"></div>')
+
+          await deleteBoardPage(boardHead)
+        }
+      async function deleteBoardPage(boardHead){
+        let deletePromise=new Promise(function(resolve){
+          let request=new XMLHttpRequest();
+          request.open("GET",`deleteBoard/${boardHead}`);
+          request.onload=function(){
+            if(request.status==200){
+              resolve(request.response)
+            }
+            else{
+              resolve("File Not Fount Please wait!");
+            }
+          
+          }
+          request.send();
+        });
+        document.getElementById("deleteBoardDetails").innerHTML=await deletePromise;
+        if($("#checkbox").is(":checked")){
+          $('#deleteContent').css("background","#2b2c37")
+        }
+        else{
+          $('#deleteContent').css("background","white")
+        }
+
+      }
+  
+    function deleteCancel(){
+       $('#deleteBoardDetails').remove();
+     }
+  
+      
+   function NewTaskAdd(boardNamevalue){
+    console.log(boardNamevalue)
+    const splitname=boardNamevalue.split(" ");
+    const splitnamevalue=splitname.join("*");
+    console.log(splitnamevalue)
+      $('#mainContent').load(`/newTask/${splitnamevalue}`);
+   }
+
+   function editboard(boardnames){
+    // const splitname=boardnames.split(" ");
+    // const splitnamevalue=splitname.join("*");
+     $('#deleteBoardDetails').load(`/editBoard/${boardnames}`);
+
+     
+       }
+       if($("#checkbox").is(":checked")){
+        $("#headDiv").css("border-left","1px solid #828fa3");
+        $('#headTitle').css("color","white");
+        $("#header").css("background","#2b2c37");
+
+        
+       }
+       else{
+        $("#headDiv").css("border-left","1px solid #aba4ff");
+        $('#headTitle').css("color","black");
+        $("#header").css("background","#ffffff");
+        
+       }
+  </script> 
+  </div>
+  
+  

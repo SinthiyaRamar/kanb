@@ -1,18 +1,16 @@
 <script>
     $('#whole-container').append('<div id=newtaskdivbackground ></div>')
 </script>
-<%let columnvaluearray=columnArrayvalue  %>
-
 
 <div id="newTaskContentDiv" >
        <div id="taskAligndiv">
         <div id="newtaskelementDiv"> 
-            <% let boardidnovalue=boardidno %>
+            <% var boardidnovalue=boardidno %>
+            <% var columnvaluearray=columnArrayvalue %>
 
-                <form action="/newTaskPage/<%= boardidnovalue %>" method="post">
-                    <h1 id="newtaskaddstyle" >Add New Task</h1>
+                   <div id="addnewtaskcrossimgdiv" > <h1 id="newtaskaddstyle" >Add New Task</h1><img id="newtaskaddcrossimg" onclick="removenewtaskpage('<%=boardidnovalue%>')" src="/assets/icon-cross.svg" /></div>
           <p class="newtaskfontsize" >Title</p>
-          <input autocomplete="off" placeholder="e.g., Build Settings UI" name="tasktitle" id="newtaskinputtitle" type="text" />
+          <input autocomplete="off" placeholder="e.g., Build Settings UI" name="tasktitle" id="newtaskinputtitle" type="text" required/>
           <p class="newtaskfontsize" >Description</p>
           <textarea autocomplete="off" name="description" placeholder="e.g. It is always good to take a break. " id="newtaskdescriptioninput" type="text" ></textarea>
 
@@ -34,23 +32,33 @@
           </select>
           <p></p>
         </div>
-          <input type="submit" id="createTaskButton" value="Create Task" ></button>
-        </form>
+          <input type="submit" onclick="addTaskSubmitButton('<%=boardname%>','<%= boardidnovalue%>')" id="createTaskButton" value="Create Task" ></button>
        </div>
     </div>
 </div>
 
 <script>
-  let subtasklistcount=0;
+var subtasklistcount=0;
   $('#newaddsubtasks').click(function(){
     subtasklistcount++;
-    $('.subtasublist').append(`<li id="subtasklist${subtasklistcount}" ><div class="BoardSubtaskName" ><input name="subtasklist${subtasklistcount}" type="text" class="subtasknamelistinputtag" placeholder="Subtask here!!!" required/><img class="crossImg" onclick=RemovesubList(${subtasklistcount})  src="./assets/icon-cross.svg" /></div></li>`)
+    $('.subtasublist').append(`<li class="sub${subtasklistcount}" ><div id="BoardSubtaskName" ><input autocomplete="off" name="subtasklist${subtasklistcount}" class="sub${subtasklistcount} subinputclass" id="subtasklist${subtasklistcount}" type="text" class="subtasknamelistinputtag" placeholder="Subtask here!!!" required/><img class="sub${subtasklistcount} subtaskcross" class="crossImg" onclick=RemovesubList(${subtasklistcount})  src="./assets/icon-cross.svg" /></div></li>`)
     var list = document.querySelector(".subtasublist");
     var items = list.getElementsByTagName("li");
     var count = items.length;
 
     $('#subtasklistCount').remove();
       $('#newaddsubtasks').append(`<input id="subtasklistCount" autocomplete="off" type="number" name="subtaskListCountvalue" value=${count}  style="display:none" />`)
+      if($("#checkbox").is(":checked")){
+
+$('.subinputclass').css("border","1px solid #828fa3")
+$('.subinputclass ').css("background","#2b2c37")
+$('.subinputclass').css("color","white")
+}
+else{
+$('.subinputclass').css("border","1px solid black")
+$('.subinputclass').css("background","white")
+$('.subinputclass').css("color","#29313c")
+}
 })
 function RemovesubList(subtaskremovelistnumber){
     var list = document.querySelector(".subtasublist");
@@ -58,9 +66,77 @@ function RemovesubList(subtaskremovelistnumber){
      var count = items.length-1;
      // alert(count);
       $('#subtasklistCount').remove();
+      $(`.sub${subtaskremovelistnumber}`).remove();
      $(`#subtasklist${subtaskremovelistnumber}`).remove();
 
      $('#newaddsubtasks').append(`<input id="subtasklistCount" type="number" name="subtaskListCountvalue" value=${count}  style="display:none" />`)
 
+}
+
+function addTaskSubmitButton(boardname,boardidvalue){
+
+  let subtaskcount=$('#subtasklistCount').val();
+  let subtaskArray=[];
+  for(let i=1; i<=subtaskcount; i++){
+
+    console.log($(`#subtasklist${i}`).val())
+     subtaskArray.push({tasks:$(`#subtasklist${i}`).val(),isCompleted:false});
+  }
+  let tasksObject={
+    title:$('#newtaskinputtitle').val(),
+    description:$('#newtaskdescriptioninput').val(),
+    subtasks:subtaskArray,
+    status:$('#tasktitlenameselect').val()
+   }
+   if(tasksObject.title!=""){
+   fetch(`addnewtask/${boardname}`,
+   {
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json;charset=utf-8'
+    },
+    body: JSON.stringify({
+      newtaskobject:JSON.stringify(tasksObject)
+    }),
+     redirect:"follow"
+   }
+   
+   )
+   $('#newtaskdivbackground').remove();
+   $('#mainContent').load(`/mainContent/${boardidvalue}`);
+  }
+}
+function removenewtaskpage(boardno){
+  $('#mainContent').load(`/mainContent/${boardno}`);
+  $('#newtaskdivbackground').remove();
+  $('#newTaskContentDiv').remove();
+}
+
+
+if($("#checkbox").is(":checked")){
+  $('#newtaskelementDiv').css("background","#2b2c37")
+  $('#newtaskelementDiv').css("color","white")
+  $('#newtaskinputtitle').css("border","1px solid #828fa3")
+$('#newtaskinputtitle').css("background","#2b2c37")
+$('#newtaskinputtitle').css("color","white")
+$('#newtaskdescriptioninput').css("border","1px solid #828fa3")
+$('#newtaskdescriptioninput').css("background","#2b2c37")
+$('#newtaskdescriptioninput').css("color","white")
+$('#tasktitlenameselect').css("border","1px solid #828fa3")
+$('#tasktitlenameselect').css("background","#2b2c37")
+$('#tasktitlenameselect').css("color","white")
+}
+else{
+  $('#newtaskelementDiv').css("background","white")
+  $('#newtaskelementDiv').css("color","black")
+  $('#newtaskinputtitle').css("border","1px solid black")
+$('#newtaskinputtitle').css("background","white")
+$('#newtaskinputtitle').css("color","#29313c")
+$('#newtaskdescriptioninput').css("border","1px solid black")
+$('#newtaskdescriptioninput').css("background","white")
+$('#newtaskdescriptioninput').css("color","#29313c")
+$('#tasktitlenameselect').css("border","1px solid black")
+$('#tasktitlenameselect').css("background","white")
+$('#tasktitlenameselect').css("color","#29313c")
 }
 </script>
